@@ -41,7 +41,8 @@ function DashboardChat({ tenant, onClose }) {
     setIsTyping(true);
 
     try {
-      const res = await fetch('/api/chat/message', {
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${apiBase}/api/chat/message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,12 +60,12 @@ function DashboardChat({ tenant, onClose }) {
           escalated: data.escalated
         }]);
       } else {
-        throw new Error('No response');
+        throw new Error(data.error || 'No response');
       }
     } catch (e) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "Sorry, I couldn't process that. Make sure your knowledge base has content.",
+        content: `Error: ${e.message}. Make sure your knowledge base has content and the backend is running.`,
         timestamp: new Date()
       }]);
     } finally {

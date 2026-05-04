@@ -117,7 +117,7 @@ const generateResponse = async (options) => {
   } catch (error) {
     logger.error(`AI generation error: ${error.message}`);
     return {
-      response: "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment or contact our support team directly.",
+      response: `I'm sorry, I'm having trouble processing your request right now. Error: ${error.message}. Please try again in a moment.`,
       confidence: 0,
       shouldEscalate: true,
       sources: [],
