@@ -19,6 +19,14 @@ const handleValidation = (req, res, next) => {
 // All routes require auth
 router.use(protect, requireBusiness);
 
+// Middleware to ensure tenant exists
+router.use((req, res, next) => {
+  if (!req.tenant) {
+    return res.status(400).json({ error: 'No tenant found for this account. Please contact support.' });
+  }
+  next();
+});
+
 // @route   GET /api/knowledge-base
 // @desc    Get all documents for tenant
 router.get('/', async (req, res) => {

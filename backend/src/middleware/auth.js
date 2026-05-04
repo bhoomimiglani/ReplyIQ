@@ -36,6 +36,18 @@ const protect = async (req, res, next) => {
       const tenant = await Tenant.findById(user.tenantId);
       if (tenant && tenant.isActive) {
         req.tenant = tenant;
+      } else if (!tenant) {
+        // Auto-create tenant if missing
+        const { v4: uuidv4 } = require('uuid');
+        const newTenant = new Tenant({
+          name: user.organization || 'My Organization',
+          owner: user._id,
+          apiKey: uuidv4().replace(/-/g, '')
+        });
+        await newTenant.save();
+        user.tenantId = newTenant._id;
+        await user.save({ validateBeforeSave: false });
+        req.tenant = newTenant;
       }
     }
     
