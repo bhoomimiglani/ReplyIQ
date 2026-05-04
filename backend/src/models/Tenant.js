@@ -77,11 +77,13 @@ const tenantSchema = new mongoose.Schema({
 // Generate slug from name
 tenantSchema.pre('save', function(next) {
   if (this.isModified('name') && !this.slug) {
-    this.slug = this.name
+    const baseSlug = this.name
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
+    // Add random suffix to ensure uniqueness
+    this.slug = `${baseSlug}-${Date.now().toString(36)}`;
   }
   next();
 });

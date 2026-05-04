@@ -51,16 +51,17 @@ app.use(cors({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
+  trustProxy: true,
   message: { error: 'Too many requests, please try again later.' }
 });
 app.use('/api/', limiter);
 
-// Chat endpoint has more lenient rate limiting
 const chatLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 30,
+  trustProxy: true,
   message: { error: 'Too many chat requests.' }
 });
 app.use('/api/chat', chatLimiter);
